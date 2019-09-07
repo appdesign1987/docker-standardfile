@@ -14,12 +14,13 @@ RUN DEBIAN_FRONTEND=noninteractive \
 
 WORKDIR $PROJECT_DIR
 
-RUN git clone https://github.com/standardfile/ruby-server.git /data/src/
+#RUN GIT CLONE FOR THE STANDARDFILESERVER
+RUN git clone https://github.com/standardfile/ruby-server.git /data/src
 
-COPY Gemfile Gemfile.lock $PROJECT_DIR
+# COPY Gemfile Gemfile.lock $PROJECT_DIR
 RUN bundle install
 
-COPY . $PROJECT_DIR
+#COPY . $PROJECT_DIR
 RUN bundle exec rake assets:precompile
 
 EXPOSE 3000
