@@ -21,6 +21,9 @@ RUN gem install bundler
 # COPY Gemfile Gemfile.lock $PROJECT_DIR
 RUN bundle install
 
+#INSTALL BOWER
+RUN npm install -g bower
+
 #COPY . $PROJECT_DIR
 RUN bundle exec rake assets:precompile
 
