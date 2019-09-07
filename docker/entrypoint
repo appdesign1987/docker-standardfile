@@ -8,7 +8,7 @@ case "$CMD" in
   'start' )
     echo `pwd`
     rm -f /data/src/tmp/pids/server.pid
-    cd /standardfile/
+    cd /data/src/
     bundle exec rails db:create db:migrate
     bundle install
     bower install --allow-root
@@ -16,7 +16,7 @@ case "$CMD" in
     ;;
 
   'bootstrap' )
-    cd /standardfile/
+    cd /data/src/
     bundle exec rails db:create db:migrate
     ;;
 
