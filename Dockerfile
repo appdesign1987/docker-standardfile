@@ -15,6 +15,9 @@ WORKDIR /app/
 #RUN GIT CLONE FOR THE STANDARDFILESERVER
 RUN git clone https://github.com/standardfile/ruby-server.git /app
 
+#We make sure we use the newest version of bundler
+RUN gem install bundler
+
 # COPY Gemfile Gemfile.lock $PROJECT_DIR
 RUN bundle install
 
