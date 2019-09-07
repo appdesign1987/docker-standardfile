@@ -1,39 +1,26 @@
-FROM node:6-alpine
+FROM ubuntu:16.04
 
-RUN mkdir -p /usr/local/etc \
-	&& { \
-		echo 'install: --no-document'; \
-		echo 'update: --no-document'; \
-} >> /usr/local/etc/gemrc \
-  && apk -U upgrade \
-  && apk add -t build-dependencies \
-    git \
-    curl-dev \
-    wget \
-    ruby-dev \
-    zlib-dev \
-    build-base \
-    mariadb-dev \ 
-  && apk add ruby ruby-io-console ruby-json ruby-bigdecimal zlib tzdata mariadb-client-libs \
-  && gem install -N rails --version "$RAILS_VERSION" \
-  && echo 'gem: --no-document' >> ~/.gemrc \
-  && cp ~/.gemrc /etc/gemrc \
-  && chmod uog+r /etc/gemrc \
-  && npm install -g bower \
-  && rm -rf ~/.gem \
-  && git clone https://github.com/standardfile/ruby-server.git standardfile \
-  && cd standardfile \
-  && rm -rf .git/ \
-  && gem install bigdecimal \
-  && echo "bundle install" \
-  && bundle config --global silence_root_warning 1 \
-  && bundle install --system \
-  && echo "bower install" \
-  && bower install --allow-root \
-  && apk del build-dependencies \
-  && rm -rf /tmp/*  /var/cache/apk/* /tmp/* /root/.gnupg /root/.cache/ \
-  && echo "bundle precompile" \
-  && bundle exec rake assets:precompile
+ENV PROJECT_DIR=/data/src/
+
+RUN DEBIAN_FRONTEND=noninteractive \
+    apt-get -y update && \
+    apt-get -y install git build-essential ruby-dev ruby-rails libz-dev libmysqlclient-dev curl tzdata && \
+    curl -sL https://deb.nodesource.com/setup_6.x | bash - && \
+    apt-get -y update && \
+    apt-get -y install nodejs && git \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
+    apt-get autoremove -y && \
+    apt-get clean
+
+WORKDIR $PROJECT_DIR
+
+RUN git clone https://github.com/standardfile/ruby-server.git /data/src/
+
+COPY Gemfile Gemfile.lock $PROJECT_DIR
+RUN bundle install
+
+COPY . $PROJECT_DIR
+RUN bundle exec rake assets:precompile
 
 EXPOSE 3000
 
